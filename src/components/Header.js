@@ -1,5 +1,7 @@
+import "../App.css";
+
 const Header = () => {
-  return <div>Hello</div>;
+  return <div className="Header">Hello</div>;
 };
 
 export default Header;
