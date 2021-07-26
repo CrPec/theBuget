@@ -1,8 +1,9 @@
+import "./App.css";
 import Hedear from "./components/Header";
 
 const App = () => {
   return (
-    <div>
+    <div className="App">
       <Hedear />
     </div>
   );
