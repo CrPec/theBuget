@@ -1,12 +1,22 @@
 import "../App.css";
+import Incomes from "./Incomes";
+import Expenses from "./Expenses";
+import Popup from "./Popup";
+import { useState } from "react";
 
 const Container = () => {
-  const handleClick = () => {
-    alert("click");
-  };
+  const [btnPopup, setBtnPopup] = useState(false);
+
   return (
     <div className="Container">
-      <div className="circle" title="Add new item" onClick={handleClick}></div>
+      <Incomes />
+      <div
+        className="circle"
+        title="Add new item"
+        onClick={() => setBtnPopup(true)}
+      ></div>
+      <Popup trigger={btnPopup} setTrigger={setBtnPopup} />
+      <Expenses />
     </div>
   );
 };
