@@ -1,11 +1,12 @@
 import "../App.css";
 import Incomes from "./Incomes";
 import Expenses from "./Expenses";
-import Popup from "./Popup";
+import AddItem from "./AddItem";
 import { useState } from "react";
 
 const Container = () => {
-  const [btnPopup, setBtnPopup] = useState(false);
+  const [addItem, setAddItem] = useState(false);
+  const [items, setItems] = useState([]);
 
   return (
     <div className="Container">
@@ -13,9 +14,14 @@ const Container = () => {
       <div
         className="circle"
         title="Add new item"
-        onClick={() => setBtnPopup(true)}
+        onClick={() => setAddItem(true)}
       ></div>
-      <Popup trigger={btnPopup} setTrigger={setBtnPopup} />
+      <AddItem
+        trigger={addItem}
+        setTrigger={setAddItem}
+        items={items}
+        setItems={setItems}
+      />
       <Expenses />
     </div>
   );
