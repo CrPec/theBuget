@@ -6,7 +6,11 @@ const AddItem = (props) => {
   return props.trigger ? (
     <div className="AddItem">
       <div className="AddItemContainer">
-        <select onChange={(e) => setItem({ ...item, type: e.target.value })}>
+        <select
+          onChange={(e) =>
+            setItem({ ...item, type: e.target.value, id: Date.now() })
+          }
+        >
           <option value="">Please select type</option>
           <option value="Incomes">Incomes</option>
           <option value="Expenses">Expenses</option>
@@ -30,11 +34,11 @@ const AddItem = (props) => {
           <button
             className="buttons save"
             onClick={() => {
-              setItem({ ...item, id: Date.now() });
-              let allItems = [...props.items];
-              allItems.push(item);
-              props.setItems(allItems);
-              props.setTrigger(false);
+              if (Object.keys(item).length === 5) {
+                let allItems = [...props.items, item];
+                props.setItems(allItems);
+                props.setTrigger(false);
+              }
             }}
           >
             Save
