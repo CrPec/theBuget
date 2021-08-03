@@ -62,6 +62,7 @@ const AddItem = (props) => {
             className="buttons cancel"
             onClick={() => {
               setItem({});
+              props.editItemFn([]);
               props.setTrigger(false);
               document.querySelector(".Error").style.display = "none";
             }}

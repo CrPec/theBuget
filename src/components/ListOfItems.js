@@ -9,7 +9,15 @@ const ListOfItems = (props) => {
         <div>Description</div>
       </div>
       {props.arr.map((itm, i) => (
-        <div className="Item" key={itm.id} onClick={() => props.edit(true)}>
+        <div
+          className="Item"
+          key={itm.id}
+          id={itm.id}
+          onClick={(e) => {
+            props.edit(true);
+            props.editItemFn(e.currentTarget);
+          }}
+        >
           <div>{itm.date}</div>
           <div>{formatValue(itm.value)}</div>
           <div>{itm.desc}</div>
