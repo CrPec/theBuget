@@ -4,12 +4,17 @@ import Expenses from "./Expenses";
 import AddItem from "./AddItem";
 import sampleData from "../Utils";
 import { formatValue } from "../Utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Container = () => {
+  const initialValue = () => JSON.parse(localStorage.getItem("theBuget")) || [];
   const [addItem, setAddItem] = useState(false);
-  const [items, setItems] = useState([]);
-  const [editItem, setEditItem] = useState([]);
+  const [items, setItems] = useState(initialValue());
+  const [editItem, setEditItem] = useState({});
+
+  useEffect(() => {
+    localStorage.setItem("theBuget", JSON.stringify(items));
+  }, [items]);
 
   const arr = (type) => {
     return type === "all"
@@ -36,12 +41,14 @@ const Container = () => {
 
   const editItemFn = (item) => {
     if (item.length === undefined) {
-      const arrItem = arr("all").filter(
-        (itm) => itm.id === parseInt(item.getAttribute("id"))
-      );
-      setEditItem(arrItem);
-    } else {
-      setEditItem([]);
+      try {
+        const arrItem = arr("all").filter(
+          (itm) => itm.id === parseInt(item.getAttribute("id"))
+        );
+        setEditItem(arrItem[0]);
+      } catch {
+        setEditItem({});
+      }
     }
   };
 
@@ -58,14 +65,16 @@ const Container = () => {
         >
           {formatValue(total(arr("Incomes"), arr("Expenses")))}
         </span>
-        <button
-          onClick={(e) => {
-            e.currentTarget.style.display = "none";
-            setItems(sampleData);
-          }}
-        >
-          Load Sample
-        </button>
+        {items.length === 0 ? (
+          <button
+            onClick={(e) => {
+              e.currentTarget.style.display = "none";
+              setItems(sampleData);
+            }}
+          >
+            Load Sample
+          </button>
+        ) : null}
       </div>
       <div className="Container">
         <Incomes
@@ -78,7 +87,7 @@ const Container = () => {
           title="Add new item"
           onClick={() => {
             setAddItem(true);
-            editItemFn([]);
+            editItemFn({});
           }}
         ></div>
         <AddItem

@@ -1,29 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AddItem = (props) => {
   const [item, setItem] = useState({});
+  useEffect(() => {
+    if (props.trigger) {
+      setItem(props.editItem);
+    }
+  }, [props.trigger, props.editItem]);
+
+  const deleteKey = (obj, arrKey) => {
+    for (const property in obj) {
+      if (arrKey.includes(property)) {
+        delete obj[property];
+      }
+    }
+    setItem({ ...obj });
+  };
 
   return props.trigger ? (
     <div className="AddItem">
       <div className="AddItemContainer">
         <div className="Error">Please add something in each field!</div>
         <select
-          onChange={(e) =>
-            setItem({ ...item, type: e.target.value, id: props.id })
-          }
+          value={item.type}
+          onChange={(e) => {
+            setItem({
+              ...item,
+              type: e.target.value,
+              id: item.id ? item.id : props.id,
+            });
+            if (e.target.value === "") {
+              deleteKey(item, ["type"]);
+            }
+          }}
         >
           <option value="">Please select type</option>
           <option value="Incomes">Incomes</option>
           <option value="Expenses">Expenses</option>
         </select>
         <input
+          value={item.value}
           type="number"
           placeholder="Value"
-          onChange={(e) =>
-            setItem({ ...item, value: parseInt(e.target.value) })
-          }
+          onChange={(e) => {
+            setItem({ ...item, value: parseInt(e.target.value) });
+            if (e.target.value === "") {
+              deleteKey(item, ["value"]);
+            }
+          }}
         />
         <input
+          value={item.date}
           type="date"
           max={`${new Date().getFullYear()}-${
             new Date().getMonth() + 1 < 10
@@ -34,19 +61,32 @@ const AddItem = (props) => {
               ? "0" + new Date().getDate()
               : new Date().getDate()
           }`}
-          onChange={(e) => setItem({ ...item, date: e.target.value })}
+          onChange={(e) => {
+            setItem({ ...item, date: e.target.value });
+            if (e.target.value === "") {
+              deleteKey(item, ["date"]);
+            }
+          }}
         />
         <input
+          value={item.desc}
           type="text"
           placeholder="Description"
-          onChange={(e) => setItem({ ...item, desc: e.target.value })}
+          onChange={(e) => {
+            setItem({ ...item, desc: e.target.value });
+            if (e.target.value === "") {
+              deleteKey(item, ["desc"]);
+            }
+          }}
         />
         <div className="AddItemButtons">
           <button
             className="buttons save"
             onClick={() => {
+              let allItems = [];
               if (Object.keys(item).length === 5) {
-                let allItems = [...props.items, item];
+                allItems = [...props.items].filter((itm) => itm.id !== item.id);
+                allItems.push(item);
                 props.setItems(allItems);
                 props.setTrigger(false);
                 setItem({});
@@ -62,7 +102,7 @@ const AddItem = (props) => {
             className="buttons cancel"
             onClick={() => {
               setItem({});
-              props.editItemFn([]);
+              props.editItemFn({});
               props.setTrigger(false);
               document.querySelector(".Error").style.display = "none";
             }}
