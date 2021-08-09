@@ -6,7 +6,7 @@ const Incomes = (props) => {
       <div className="title">Incomes</div>
       <ListOfItems
         arr={props.arrIncomes}
-        edit={props.edit}
+        setTrigger={props.setTrigger}
         editItemFn={props.editItemFn}
         deleteItemFn={props.deleteItemFn}
       />

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-const AddItem = (props) => {
+const AddEditItem = (props) => {
   const [item, setItem] = useState({});
+
   useEffect(() => {
     if (props.trigger) {
       setItem(props.editItem);
@@ -18,11 +19,11 @@ const AddItem = (props) => {
   };
 
   return props.trigger ? (
-    <div className="AddItem">
-      <div className="AddItemContainer">
+    <div className="AddEditItem">
+      <div className="AddEditItemContainer">
         <div className="Error">Please add something in each field!</div>
         <select
-          value={item.type}
+          value={item.type || ""}
           onChange={(e) => {
             setItem({
               ...item,
@@ -39,7 +40,7 @@ const AddItem = (props) => {
           <option value="Expenses">Expenses</option>
         </select>
         <input
-          value={item.value}
+          value={item.value || ""}
           type="number"
           placeholder="Value"
           onChange={(e) => {
@@ -50,7 +51,7 @@ const AddItem = (props) => {
           }}
         />
         <input
-          value={item.date}
+          value={item.date || ""}
           type="date"
           max={`${new Date().getFullYear()}-${
             new Date().getMonth() + 1 < 10
@@ -69,7 +70,7 @@ const AddItem = (props) => {
           }}
         />
         <input
-          value={item.desc}
+          value={item.desc || ""}
           type="text"
           placeholder="Description"
           onChange={(e) => {
@@ -79,9 +80,9 @@ const AddItem = (props) => {
             }
           }}
         />
-        <div className="AddItemButtons">
+        <div className="AddEditItemButtons">
           <button
-            className="buttons save"
+            className="Buttons Save"
             onClick={() => {
               let allItems = [];
               if (Object.keys(item).length === 5) {
@@ -99,7 +100,7 @@ const AddItem = (props) => {
             Save
           </button>
           <button
-            className="buttons cancel"
+            className="Buttons Cancel"
             onClick={() => {
               setItem({});
               props.editItemFn({});
@@ -117,4 +118,4 @@ const AddItem = (props) => {
   );
 };
 
-export default AddItem;
+export default AddEditItem;

@@ -20,7 +20,7 @@ const ListOfItems = (props) => {
             if (e.target.getAttribute("fill")) {
               props.deleteItemFn(e.currentTarget);
             } else {
-              props.edit(true);
+              props.setTrigger(true);
               props.editItemFn(e.currentTarget);
             }
           }}

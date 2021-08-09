@@ -1,23 +1,25 @@
 import "../App.css";
 import Incomes from "./Incomes";
 import Expenses from "./Expenses";
-import AddItem from "./AddItem";
+import AddEditItem from "./AddEditItem";
 import FilterOptions from "./FilterOptions";
-import sampleData from "../Utils";
+import { sampleData } from "../Utils";
 import { formatValue } from "../Utils";
 import { useState, useEffect } from "react";
 
 const Container = () => {
-  const initialValue = () => JSON.parse(localStorage.getItem("theBuget")) || [];
-  const [addItem, setAddItem] = useState(false);
-  const [items, setItems] = useState(initialValue());
+  const initialValueItems = () =>
+    JSON.parse(localStorage.getItem("theBuget")) || [];
+
+  const [items, setItems] = useState(initialValueItems());
+  const [trigger, setTrigger] = useState(false);
   const [editItem, setEditItem] = useState({});
 
   useEffect(() => {
     localStorage.setItem("theBuget", JSON.stringify(items));
   }, [items]);
 
-  const arr = (type) => {
+  const itemsArr = (type) => {
     return type === "all"
       ? items
       : items
@@ -43,7 +45,7 @@ const Container = () => {
   const editItemFn = (item) => {
     if (item.length === undefined) {
       try {
-        const arrItem = arr("all").filter(
+        const arrItem = itemsArr("all").filter(
           (itm) => itm.id === parseInt(item.getAttribute("id"))
         );
         setEditItem(arrItem[0]);
@@ -54,7 +56,7 @@ const Container = () => {
   };
 
   const deleteItemFn = (item) => {
-    const newArr = arr("all").filter(
+    const newArr = itemsArr("all").filter(
       (itm) => itm.id !== parseInt(item.getAttribute("id"))
     );
 
@@ -77,12 +79,12 @@ const Container = () => {
         Total
         <span
           className={
-            total(arr("Incomes"), arr("Expenses")) >= 0
+            total(itemsArr("Incomes"), itemsArr("Expenses")) >= 0
               ? "TotalPozitive"
               : "TotalNegative"
           }
         >
-          {formatValue(total(arr("Incomes"), arr("Expenses")))}
+          {formatValue(total(itemsArr("Incomes"), itemsArr("Expenses")))}
         </span>
         {items.length === 0 ? (
           <button
@@ -94,13 +96,13 @@ const Container = () => {
             Load Sample
           </button>
         ) : (
-          <FilterOptions arr={arr} filterItemsFn={filterItemsFn} />
+          <FilterOptions itemsArr={itemsArr} filterItemsFn={filterItemsFn} />
         )}
       </div>
       <div className="Container">
         <Incomes
-          arrIncomes={arr("Incomes")}
-          edit={setAddItem}
+          arrIncomes={itemsArr("Incomes")}
+          setTrigger={setTrigger}
           editItemFn={editItemFn}
           deleteItemFn={deleteItemFn}
         />
@@ -108,22 +110,22 @@ const Container = () => {
           className="AddNewItem"
           title="Add new item"
           onClick={() => {
-            setAddItem(true);
+            setTrigger(true);
             editItemFn({});
           }}
         ></div>
-        <AddItem
-          trigger={addItem}
-          setTrigger={setAddItem}
+        <AddEditItem
+          trigger={trigger}
+          setTrigger={setTrigger}
           items={items}
           setItems={setItems}
           editItem={editItem}
           editItemFn={editItemFn}
-          id={addItem ? Date.now() : 0}
+          id={trigger ? Date.now() : 0}
         />
         <Expenses
-          arrExpenses={arr("Expenses")}
-          edit={setAddItem}
+          arrExpenses={itemsArr("Expenses")}
+          setTrigger={setTrigger}
           editItemFn={editItemFn}
           deleteItemFn={deleteItemFn}
         />
