@@ -44,7 +44,7 @@ const AddItem = (props) => {
           placeholder="Value"
           onChange={(e) => {
             setItem({ ...item, value: parseInt(e.target.value) });
-            if (e.target.value === "") {
+            if (isNaN(e.target.value)) {
               deleteKey(item, ["value"]);
             }
           }}

@@ -2,6 +2,7 @@ import "../App.css";
 import Incomes from "./Incomes";
 import Expenses from "./Expenses";
 import AddItem from "./AddItem";
+import FilterOptions from "./FilterOptions";
 import sampleData from "../Utils";
 import { formatValue } from "../Utils";
 import { useState, useEffect } from "react";
@@ -52,6 +53,24 @@ const Container = () => {
     }
   };
 
+  const deleteItemFn = (item) => {
+    const newArr = arr("all").filter(
+      (itm) => itm.id !== parseInt(item.getAttribute("id"))
+    );
+
+    setItems(newArr);
+  };
+
+  const filterItemsFn = (year) => {
+    if (year === "") {
+      setItems(JSON.parse(localStorage.getItem("filter")));
+      localStorage.setItem("filter", JSON.stringify([]));
+    } else {
+      localStorage.setItem("filter", JSON.stringify(items));
+      setItems(items.filter((itm) => itm.date.split("-")[0] === year));
+    }
+  };
+
   return (
     <div>
       <div className="Total">
@@ -74,13 +93,16 @@ const Container = () => {
           >
             Load Sample
           </button>
-        ) : null}
+        ) : (
+          <FilterOptions arr={arr} filterItemsFn={filterItemsFn} />
+        )}
       </div>
       <div className="Container">
         <Incomes
           arrIncomes={arr("Incomes")}
           edit={setAddItem}
           editItemFn={editItemFn}
+          deleteItemFn={deleteItemFn}
         />
         <div
           className="AddNewItem"
@@ -103,6 +125,7 @@ const Container = () => {
           arrExpenses={arr("Expenses")}
           edit={setAddItem}
           editItemFn={editItemFn}
+          deleteItemFn={deleteItemFn}
         />
       </div>
     </div>

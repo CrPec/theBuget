@@ -8,6 +8,7 @@ const Expenses = (props) => {
         arr={props.arrExpenses}
         edit={props.edit}
         editItemFn={props.editItemFn}
+        deleteItemFn={props.deleteItemFn}
       />
     </div>
   ) : (
