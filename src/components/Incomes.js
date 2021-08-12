@@ -3,7 +3,10 @@ import ListOfItems from "./ListOfItems";
 const Incomes = (props) => {
   return props.arrIncomes.length ? (
     <div className="Incomes">
-      <div className="title">Incomes</div>
+      <div className="Title">
+        <div>{props.formatValue(props.total(props.arrIncomes))}</div>
+        <div>Incomes</div>
+      </div>
       <ListOfItems
         arr={props.arrIncomes}
         setTrigger={props.setTrigger}
@@ -12,7 +15,7 @@ const Incomes = (props) => {
       />
     </div>
   ) : (
-    <div className="Incomes">You don't have Incomes!!!</div>
+    <div className="Incomes">You don't have any Incomes!!!</div>
   );
 };
 

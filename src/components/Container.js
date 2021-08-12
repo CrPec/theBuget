@@ -2,7 +2,6 @@ import "../App.css";
 import Incomes from "./Incomes";
 import Expenses from "./Expenses";
 import AddEditItem from "./AddEditItem";
-import FilterOptions from "./FilterOptions";
 import { sampleData } from "../Utils";
 import { formatValue } from "../Utils";
 import { useState, useEffect } from "react";
@@ -27,19 +26,16 @@ const Container = () => {
           .sort((a, b) => new Date(b.date) - new Date(a.date));
   };
 
-  const total = (arrIncomes, arrExpenses) => {
-    const inc = arrIncomes
+  const total = (arr) => {
+    return arr
       .map((itm) => itm.value)
       .reduce((accumulator, currentValue) => {
         return accumulator + currentValue;
       }, 0);
-    const exp = arrExpenses
-      .map((itm) => itm.value)
-      .reduce((accumulator, currentValue) => {
-        return accumulator + currentValue;
-      }, 0);
+  };
 
-    return inc - exp;
+  const totalResult = (totalIncomes, totalExpenses) => {
+    return totalIncomes - totalExpenses;
   };
 
   const editItemFn = (item) => {
@@ -48,7 +44,11 @@ const Container = () => {
         const arrItem = itemsArr("all").filter(
           (itm) => itm.id === parseInt(item.getAttribute("id"))
         );
-        setEditItem(arrItem[0]);
+        if (arrItem[0] !== undefined) {
+          setEditItem(arrItem[0]);
+        } else {
+          setEditItem({});
+        }
       } catch {
         setEditItem({});
       }
@@ -63,30 +63,24 @@ const Container = () => {
     setItems(newArr);
   };
 
-  const filterItemsFn = (year) => {
-    if (year === "") {
-      setItems(JSON.parse(localStorage.getItem("filter")));
-      localStorage.setItem("filter", JSON.stringify([]));
-    } else {
-      localStorage.setItem("filter", JSON.stringify(items));
-      setItems(items.filter((itm) => itm.date.split("-")[0] === year));
-    }
-  };
-
   return (
     <div>
       <div className="Total">
-        Total
         <span
           className={
-            total(itemsArr("Incomes"), itemsArr("Expenses")) >= 0
+            totalResult(
+              total(itemsArr("Incomes")),
+              total(itemsArr("Expenses"))
+            ) >= 0
               ? "TotalPozitive"
               : "TotalNegative"
           }
         >
-          {formatValue(total(itemsArr("Incomes"), itemsArr("Expenses")))}
+          {formatValue(
+            totalResult(total(itemsArr("Incomes")), total(itemsArr("Expenses")))
+          )}
         </span>
-        {items.length === 0 ? (
+        {items.length === 0 && (
           <button
             onClick={(e) => {
               e.currentTarget.style.display = "none";
@@ -95,12 +89,12 @@ const Container = () => {
           >
             Load Sample
           </button>
-        ) : (
-          <FilterOptions itemsArr={itemsArr} filterItemsFn={filterItemsFn} />
         )}
       </div>
       <div className="Container">
         <Incomes
+          formatValue={formatValue}
+          total={total}
           arrIncomes={itemsArr("Incomes")}
           setTrigger={setTrigger}
           editItemFn={editItemFn}
@@ -124,6 +118,8 @@ const Container = () => {
           id={trigger ? Date.now() : 0}
         />
         <Expenses
+          formatValue={formatValue}
+          total={total}
           arrExpenses={itemsArr("Expenses")}
           setTrigger={setTrigger}
           editItemFn={editItemFn}
