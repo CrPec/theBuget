@@ -15,3 +15,8 @@ export function formatValue(cents) {
     currency: "Lei",
   });
 }
+
+export function formatDate(date) {
+  var newDate = new Date(date);
+  return newDate.toLocaleDateString("en-GB");
+}

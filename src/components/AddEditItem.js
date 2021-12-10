@@ -42,7 +42,7 @@ const AddEditItem = (props) => {
         <input
           value={item.value || ""}
           type="number"
-          placeholder="Value"
+          placeholder="Value in cents"
           onChange={(e) => {
             setItem({ ...item, value: parseInt(e.target.value) });
             if (isNaN(e.target.value)) {

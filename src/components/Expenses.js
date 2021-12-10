@@ -7,6 +7,12 @@ const Expenses = (props) => {
         <div>Expenses</div>
         <div>{props.formatValue(props.total(props.arrExpenses))}</div>
       </div>
+      <div className="ItemsHeader">
+        <div>Date</div>
+        <div>Amount</div>
+        <div>Description</div>
+        <div></div>
+      </div>
       <ListOfItems
         arr={props.arrExpenses}
         setTrigger={props.setTrigger}

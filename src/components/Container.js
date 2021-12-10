@@ -2,6 +2,7 @@ import "../App.css";
 import Incomes from "./Incomes";
 import Expenses from "./Expenses";
 import AddEditItem from "./AddEditItem";
+import Filter from "./Filter";
 import { sampleData } from "../Utils";
 import { formatValue } from "../Utils";
 import { useState, useEffect } from "react";
@@ -13,10 +14,13 @@ const Container = () => {
   const [items, setItems] = useState(initialValueItems());
   const [trigger, setTrigger] = useState(false);
   const [editItem, setEditItem] = useState({});
+  const [filter, setFilter] = useState([]);
+  const [boolVar, setBoolVar] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("theBuget", JSON.stringify(items));
-  }, [items]);
+    localStorage.setItem("theBuget-Filter", JSON.stringify(filter));
+  }, [items, filter, boolVar]);
 
   const itemsArr = (type) => {
     return type === "all"
@@ -28,7 +32,9 @@ const Container = () => {
 
   const total = (arr) => {
     return arr
-      .map((itm) => itm.value)
+      .map((itm) => {
+        return itm.value;
+      })
       .reduce((accumulator, currentValue) => {
         return accumulator + currentValue;
       }, 0);
@@ -63,21 +69,45 @@ const Container = () => {
     setItems(newArr);
   };
 
+  const filterfn = (txt) => {
+    if (txt === "All") {
+      setBoolVar(false);
+      setFilter([]);
+    } else {
+      setBoolVar(true);
+      setFilter(
+        items.filter((itm) => {
+          const date = new Date(itm.date);
+          return date.getFullYear() === parseInt(txt);
+        })
+      );
+    }
+  };
+
+  const filterArr = (type) => {
+    return filter
+      .filter((itm) => itm.type === type)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  };
+
   return (
     <div>
       <div className="Total">
         <span
           className={
             totalResult(
-              total(itemsArr("Incomes")),
-              total(itemsArr("Expenses"))
+              total(boolVar ? filterArr("Incomes") : itemsArr("Incomes")),
+              total(boolVar ? filterArr("Expenses") : itemsArr("Expenses"))
             ) >= 0
               ? "TotalPozitive"
               : "TotalNegative"
           }
         >
           {formatValue(
-            totalResult(total(itemsArr("Incomes")), total(itemsArr("Expenses")))
+            totalResult(
+              total(boolVar ? filterArr("Incomes") : itemsArr("Incomes")),
+              total(boolVar ? filterArr("Expenses") : itemsArr("Expenses"))
+            )
           )}
         </span>
         {items.length === 0 && (
@@ -91,11 +121,12 @@ const Container = () => {
           </button>
         )}
       </div>
+      <Filter arr={items} fiterfn={filterfn} />
       <div className="Container">
         <Incomes
           formatValue={formatValue}
           total={total}
-          arrIncomes={itemsArr("Incomes")}
+          arrIncomes={boolVar ? filterArr("Incomes") : itemsArr("Incomes")}
           setTrigger={setTrigger}
           editItemFn={editItemFn}
           deleteItemFn={deleteItemFn}
@@ -120,7 +151,7 @@ const Container = () => {
         <Expenses
           formatValue={formatValue}
           total={total}
-          arrExpenses={itemsArr("Expenses")}
+          arrExpenses={boolVar ? filterArr("Expenses") : itemsArr("Expenses")}
           setTrigger={setTrigger}
           editItemFn={editItemFn}
           deleteItemFn={deleteItemFn}

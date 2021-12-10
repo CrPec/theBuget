@@ -1,22 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { formatValue } from "../Utils";
+import { formatValue, formatDate } from "../Utils";
 
 const ListOfItems = (props) => {
   return (
     <div className="Items">
-      <div className="ItemHeader">
-        <div>Date</div>
-        <div>Amount</div>
-        <div>Description</div>
-        <div></div>
-      </div>
       {props.arr.map((itm) => (
         <div
           className="Item"
           key={itm.id}
           id={itm.id}
           onClick={(e) => {
+            console.log(e.currentTarget);
             if (e.target.getAttribute("fill")) {
               props.deleteItemFn(e.currentTarget);
             } else {
@@ -25,9 +20,9 @@ const ListOfItems = (props) => {
             }
           }}
         >
-          <div>{itm.date}</div>
+          <div>{formatDate(itm.date)}</div>
           <div>{formatValue(itm.value)}</div>
-          <div>{itm.desc}</div>
+          <div className="longDesc">{itm.desc}</div>
           <FontAwesomeIcon icon={faTrash} title="Delete this item" />
         </div>
       ))}
