@@ -92,6 +92,7 @@ const AddEditItem = (props) => {
                 props.setTrigger(false);
                 setItem({});
                 document.querySelector(".Error").style.display = "none";
+                props.updateFilter();
               } else {
                 document.querySelector(".Error").style.display = "block";
               }

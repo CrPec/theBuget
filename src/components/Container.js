@@ -90,6 +90,21 @@ const Container = () => {
       .sort((a, b) => new Date(b.date) - new Date(a.date));
   };
 
+  const updateFilter = () => {
+    const filter = document.querySelector("#dropDown");
+    const originalValue = filter.value;
+    if (originalValue !== "All") {
+      filter.value = "All";
+      filter.dispatchEvent(new Event("change", { bubbles: true }));
+      setTimeout(() => {
+        if ([...filter.options].map((ev) => ev.label).includes(originalValue)) {
+          filter.value = originalValue;
+          filter.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      }, 0);
+    }
+  };
+
   return (
     <div>
       <div className="Total">
@@ -130,6 +145,7 @@ const Container = () => {
           setTrigger={setTrigger}
           editItemFn={editItemFn}
           deleteItemFn={deleteItemFn}
+          updateFilter={updateFilter}
         />
         <div
           className="AddNewItem"
@@ -140,6 +156,7 @@ const Container = () => {
           }}
         ></div>
         <AddEditItem
+          updateFilter={updateFilter}
           trigger={trigger}
           setTrigger={setTrigger}
           items={items}
@@ -155,6 +172,7 @@ const Container = () => {
           setTrigger={setTrigger}
           editItemFn={editItemFn}
           deleteItemFn={deleteItemFn}
+          updateFilter={updateFilter}
         />
       </div>
     </div>

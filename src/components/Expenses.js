@@ -18,6 +18,7 @@ const Expenses = (props) => {
         setTrigger={props.setTrigger}
         editItemFn={props.editItemFn}
         deleteItemFn={props.deleteItemFn}
+        updateFilter={props.updateFilter}
       />
     </div>
   ) : (

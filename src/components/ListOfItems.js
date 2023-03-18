@@ -11,9 +11,9 @@ const ListOfItems = (props) => {
           key={itm.id}
           id={itm.id}
           onClick={(e) => {
-            console.log(e.currentTarget);
             if (e.target.getAttribute("fill")) {
               props.deleteItemFn(e.currentTarget);
+              props.updateFilter();
             } else {
               props.setTrigger(true);
               props.editItemFn(e.currentTarget);
